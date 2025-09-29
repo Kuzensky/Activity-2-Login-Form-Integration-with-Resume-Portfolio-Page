@@ -1,9 +1,9 @@
 <?php
 define('DB_SERVER', 'localhost');
 define('DB_PORT', '5432');
-define('DB_USERNAME', 'postgres');
-define('DB_PASSWORD', 'Syaako44');
-define('DB_NAME', 'nayre_login_db');
+define('DB_USERNAME', '');
+define('DB_PASSWORD', '');
+define('DB_NAME', '');
 
 try {
     $pdo = new PDO("pgsql:host=" . DB_SERVER . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USERNAME, DB_PASSWORD);
