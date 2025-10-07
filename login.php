@@ -1,52 +1,70 @@
 <?php
+// Start a session to track user login state
 session_start();
+// Include the database connection file
 require_once 'db.php';
 
+// Check if user is already logged in, if yes redirect to resume page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: resume.php");
     exit;
 }
 
+// Initialize variables to store form input and error messages
 $email = $password = "";
 $email_err = $password_err = $login_err = "";
 
+// Process form data when form is submitted via POST method
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    // Validate email input
     if(empty(trim($_POST["email"]))){
         $email_err = "Please enter your email.";
     } else {
         $email = trim($_POST["email"]);
     }
 
+    // Validate password input
     if(empty(trim($_POST["password"]))){
         $password_err = "Please enter your password.";
     } else {
         $password = trim($_POST["password"]);
     }
 
+    // If no validation errors, proceed to check credentials in database
     if(empty($email_err) && empty($password_err)){
+        // Prepare SQL query to select user by email
         $sql = "SELECT id, email, password FROM users WHERE email = ?";
         if($stmt = $pdo->prepare($sql)){
+            // Bind the email parameter to the prepared statement
             $stmt->bindParam(1, $email, PDO::PARAM_STR);
             if($stmt->execute()){
+                // Check if email exists in database
                 if($stmt->rowCount() == 1){
                     $row = $stmt->fetch();
+                    // Verify the password against the hashed password in database
                     if(password_verify($password, $row["password"])){
+                        // Password is correct, create session variables
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $row["id"];
                         $_SESSION["email"] = $row["email"];
                         $_SESSION["login_time"] = date("Y-m-d H:i:s");
+                        // Redirect to resume/portfolio page
                         header("location: resume.php");
                         exit;
                     } else {
+                        // Password is incorrect
                         $login_err = "Invalid email or password.";
                     }
                 } else {
+                    // Email doesn't exist in database
                     $login_err = "Invalid email or password.";
                 }
             }
+            // Close statement
             unset($stmt);
         }
     }
+    // Close database connection
     unset($pdo);
 }
 ?>
@@ -101,26 +119,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </div>
 
     <script>
-        // Add loading animation to form submission
+        // Add loading animation to form submission button
         document.querySelector('form').addEventListener('submit', function(e) {
             const btn = document.getElementById('loginBtn');
             const btnText = btn.querySelector('.btn-text');
 
+            // Show loading spinner and change button text
             btn.classList.add('loading');
             btnText.textContent = 'Signing in...';
 
-            // Add a small delay to show animation
+            // Add a small delay to show the loading animation before form submits
             setTimeout(() => {
-                // Form will submit after this
+                // Form will submit after this delay
             }, 300);
         });
 
-        // Add focus animations to form inputs
+        // Add focus animations to form input fields
         document.querySelectorAll('.form-control').forEach(input => {
+            // When input field receives focus, add 'focused' class to parent
             input.addEventListener('focus', function() {
                 this.parentElement.classList.add('focused');
             });
 
+            // When input field loses focus and is empty, remove 'focused' class
             input.addEventListener('blur', function() {
                 if (!this.value) {
                     this.parentElement.classList.remove('focused');

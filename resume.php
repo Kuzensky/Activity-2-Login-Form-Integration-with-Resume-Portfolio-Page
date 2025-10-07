@@ -1,18 +1,21 @@
 <?php
+// Start a session to track user login state
 session_start();
 
-// Check if user is logged in
+// Check if user is logged in, if not redirect to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
 
+// Define personal information variables
 $name = "Nayre, Christian B.";
 $email = "cbnayre04@gmail.com";
 $phone = "+63 956-513-6811";
 $location = "Darasa, Tanauan City, Batangas";
 $summary = "Computer Science student with a focus on web development and web design. Skilled in creating responsive, user-friendly websites using HTML, CSS, JavaScript, and modern frameworks. Passionate about blending creativity with technology to build engaging digital experiences, while continuously learning and adapting to new tools. Strong teamwork and problem-solving abilities with a genuine interest in contributing to innovative projects.";
 
+// Define skills array
 $skills = [
     "Programming Languages: Python, Java, C#, C++",
     "Web Development: HTML, CSS, JavaScript, React Framework",
@@ -21,6 +24,7 @@ $skills = [
     "Tools & Platforms: GitHub, XAMPP, VS Code"
 ];
 
+// Define projects array with title, type, and details
 $projects = [
     [
         "title" => "FarmEase – Farmer-to-Market E-Commerce Website",
@@ -50,6 +54,7 @@ $projects = [
     ]
 ];
 
+// Define organizations array
 $organizations = [
     "Junior Philippine Computer Society (JPCS) – Member",
     "Association of Computer Engineering Students and Scholars (ACCESS) – Member"
@@ -340,11 +345,12 @@ $organizations = [
     </div>
 
     <script>
+        // Function to trigger browser print dialog for printing the resume
         function printResume() {
             window.print();
         }
 
-        // Add smooth scrolling
+        // Enable smooth scrolling for the entire page
         document.documentElement.style.scrollBehavior = 'smooth';
     </script>
 </body>
