@@ -1,7 +1,3 @@
--- Seed Resume Data for User ID 1 (Default Public Resume)
--- This populates the database with sample resume data
--- All logged-in users can edit this resume
-
 -- Insert resume profile
 INSERT INTO resume_profile (user_id, full_name, email, phone, location, summary)
 VALUES (
