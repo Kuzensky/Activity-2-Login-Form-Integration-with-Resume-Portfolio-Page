@@ -5,7 +5,7 @@ session_start();
 $_SESSION = array();
 // Destroy the session completely
 session_destroy();
-// Redirect user to login page after logout
-header("location: login.php");
+// Redirect user to homepage (public resume view) after logout
+header("location: index.php");
 exit;
 ?>

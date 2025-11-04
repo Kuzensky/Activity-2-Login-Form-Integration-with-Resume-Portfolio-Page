@@ -47,9 +47,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $row["id"];
                         $_SESSION["email"] = $row["email"];
-                        $_SESSION["login_time"] = date("Y-m-d H:i:s");
-                        // Redirect to resume/portfolio page
-                        header("location: resume.php");
+
+                        // Redirect to homepage
+                        header("location: index.php");
                         exit;
                     } else {
                         // Password is incorrect
