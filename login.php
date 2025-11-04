@@ -1,12 +1,10 @@
 <?php
 // Start a session to track user login state
 session_start();
-// Include the database connection file
-require_once 'db.php';
 
 // Check if user is already logged in, if yes redirect to resume page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: resume.php");
+    header("location: index.php");
     exit;
 }
 
@@ -30,42 +28,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $password = trim($_POST["password"]);
     }
 
-    // If no validation errors, proceed to check credentials in database
+    // If no validation errors, automatically log in with any credentials
     if(empty($email_err) && empty($password_err)){
-        // Prepare SQL query to select user by email
-        $sql = "SELECT id, email, password FROM users WHERE email = ?";
-        if($stmt = $pdo->prepare($sql)){
-            // Bind the email parameter to the prepared statement
-            $stmt->bindParam(1, $email, PDO::PARAM_STR);
-            if($stmt->execute()){
-                // Check if email exists in database
-                if($stmt->rowCount() == 1){
-                    $row = $stmt->fetch();
-                    // Verify the password against the hashed password in database
-                    if(password_verify($password, $row["password"])){
-                        // Password is correct, create session variables
-                        $_SESSION["loggedin"] = true;
-                        $_SESSION["id"] = $row["id"];
-                        $_SESSION["email"] = $row["email"];
+        // Create session variables for any email/password combination
+        $_SESSION["loggedin"] = true;
+        $_SESSION["id"] = 1; // Default user ID
+        $_SESSION["email"] = $email;
 
-                        // Redirect to homepage
-                        header("location: index.php");
-                        exit;
-                    } else {
-                        // Password is incorrect
-                        $login_err = "Invalid email or password.";
-                    }
-                } else {
-                    // Email doesn't exist in database
-                    $login_err = "Invalid email or password.";
-                }
-            }
-            // Close statement
-            unset($stmt);
-        }
+        // Redirect to homepage
+        header("location: index.php");
+        exit;
     }
-    // Close database connection
-    unset($pdo);
 }
 ?>
 
@@ -83,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="container">
         <div class="form-container">
             <h2>Login</h2>
-            <p>Sign in to view the portfolio</p>
+            <p>Sign in to edit the resume</p>
 
             <?php if(!empty($login_err)): ?>
                 <div class="error-message"><?php echo $login_err; ?></div>
@@ -112,9 +85,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 </button>
             </form>
 
-            <div class="switch-form">
-                <p>Don't have an account? <a href="register.php">Register here</a></p>
-            </div>
         </div>
     </div>
 
